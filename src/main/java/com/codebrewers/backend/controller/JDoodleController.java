@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "https://your-react-app-domain.com")
 public class JDoodleController {
 
     @Autowired
