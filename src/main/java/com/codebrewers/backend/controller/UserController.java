@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "https://your-react-app-domain.com")
+@CrossOrigin(origins = "*")
 public class UserController {
     @Autowired
     private UserService userService;
