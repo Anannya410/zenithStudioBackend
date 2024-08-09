@@ -15,6 +15,6 @@ public class BackendApplication {
 
 	@GetMapping("/")
 	public String apiRoot(){
-		return "Hello world";
+		return "Hello wordld";
 	}
 }
