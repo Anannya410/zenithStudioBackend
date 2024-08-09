@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/problems")
+@CrossOrigin(origins="*")
 public class CodingProblemController {
 
     @Autowired
@@ -27,6 +28,16 @@ public class CodingProblemController {
     @GetMapping("/{id}")
     public CodingProblem getProblemById(@PathVariable String id){
         return codingProblemService.getProblemById(id);
+    }
+
+    @GetMapping("/search/title")
+    public List<CodingProblem> searchProblemsByTitle(@RequestParam String title) {
+        return codingProblemService.searchProblemsByTitle(title);
+    }
+
+    @GetMapping("/search/text")
+    public List<CodingProblem> searchProblemsByText(@RequestParam String text) {
+        return codingProblemService.searchProblemsByText(text);
     }
 
 }
