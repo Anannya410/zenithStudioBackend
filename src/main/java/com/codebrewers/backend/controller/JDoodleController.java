@@ -13,7 +13,7 @@ public class JDoodleController {
     @Autowired
     private JDoodleService jdoodleService;
 
-    @PostMapping("/execute")
+    @PostMapping("/compile")
     public JDoodleResponse executeScript(@RequestBody JDoodleRequest jdoodleRequest) {
         return jdoodleService.executeScript(jdoodleRequest);
     }
