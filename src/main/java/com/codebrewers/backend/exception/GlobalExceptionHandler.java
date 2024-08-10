@@ -1,4 +1,4 @@
-package com.codebrewers.backend;
+package com.codebrewers.backend.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
