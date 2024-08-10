@@ -1,5 +1,6 @@
 package com.codebrewers.backend.service;
 
+import com.codebrewers.backend.dao.JavaExecutionResponse;
 import org.springframework.stereotype.Service;
 
 import javax.tools.*;
@@ -9,11 +10,18 @@ import java.util.*;
 @Service
 public class JavaCompilerService {
 
-    public String compileJavaCode(String script) {
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+    public JavaExecutionResponse compileJavaCode(String script) {
+        JavaExecutionResponse response = new JavaExecutionResponse();
+        StringBuilder output = new StringBuilder();
+        StringBuilder error = new StringBuilder();
 
+        long compileStartTime = System.currentTimeMillis();
+        long compileStartMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+
+        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         if (compiler == null) {
-            return "Java compiler not available.";
+            response.setError("Java compiler not available.");
+            return response;
         }
 
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
@@ -21,21 +29,41 @@ public class JavaCompilerService {
         SimpleJavaFileObject fileObject = new SimpleJavaSourceFromString("Main", script);
         Iterable<? extends JavaFileObject> compilationUnits = Arrays.asList(fileObject);
 
-        StringWriter output = new StringWriter();
-        boolean success = compiler.getTask(output, fileManager, diagnostics, null, null, compilationUnits).call();
+        StringWriter compileOutput = new StringWriter();
+        boolean success = compiler.getTask(compileOutput, fileManager, diagnostics, null, null, compilationUnits).call();
+
+        long compileEndTime = System.currentTimeMillis();
+        long compileEndMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+
+        long compileTime = compileEndTime - compileStartTime;
+        long compileMemoryUsage = compileEndMemory - compileStartMemory;
 
         if (success) {
-            return executeJavaCode();
+            // Compilation successful, now execute the code
+            String executionOutput = executeJavaCode();
+            response.setOutput(executionOutput);
         } else {
-            StringBuilder errorOutput = new StringBuilder();
             for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
-                errorOutput.append(diagnostic.getMessage(null)).append("\n");
+                error.append(diagnostic.getMessage(null)).append("\n");
             }
-            return errorOutput.toString();
+            response.setError("Compilation failed:\n" + error.toString());
         }
+
+        long endTime = System.currentTimeMillis();
+        long endMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+
+        long executionTime = endTime - compileEndTime;
+        long memoryUsage = endMemory - compileEndMemory;
+
+        response.setCompilationTime(compileTime);
+        response.setCompilationMemoryUsage(compileMemoryUsage);
+        response.setExecutionTime(executionTime);
+        response.setMemoryUsage(memoryUsage);
+
+        return response;
     }
 
-    public String executeJavaCode() {
+    private String executeJavaCode() {
         try {
             ProcessBuilder processBuilder = new ProcessBuilder("java", "Main");
             processBuilder.redirectErrorStream(true);
