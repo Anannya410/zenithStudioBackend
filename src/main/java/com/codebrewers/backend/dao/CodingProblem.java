@@ -19,6 +19,7 @@ public class CodingProblem {
     private List<Example> examples;
     private List<String> tags;
     private List<String> hints;
+    private String difficulty;
 
     @Data
     public static class TestCase{

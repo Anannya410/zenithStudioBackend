@@ -25,10 +25,6 @@ public class CodingProblemService {
         return codingProblemRepository.findById(id).orElse(null);
     }
 
-    public List<CodingProblem> searchProblemsByTitle(String title) {
-        return codingProblemRepository.findByTitle(title);
-    }
-
     public List<CodingProblem> searchProblemsByText(String text) {
         return codingProblemRepository.searchByText(text);
     }

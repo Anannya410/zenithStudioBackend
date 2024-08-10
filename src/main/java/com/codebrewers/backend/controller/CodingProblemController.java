@@ -30,11 +30,6 @@ public class CodingProblemController {
         return codingProblemService.getProblemById(id);
     }
 
-    @GetMapping("/search/title")
-    public List<CodingProblem> searchProblemsByTitle(@RequestParam String title) {
-        return codingProblemService.searchProblemsByTitle(title);
-    }
-
     @GetMapping("/search/text")
     public List<CodingProblem> searchProblemsByText(@RequestParam String text) {
         return codingProblemService.searchProblemsByText(text);
