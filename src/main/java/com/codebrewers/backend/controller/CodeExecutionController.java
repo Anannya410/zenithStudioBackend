@@ -16,6 +16,9 @@ public class CodeExecutionController {
         StringBuilder output = new StringBuilder();
         StringBuilder error = new StringBuilder();
 
+        long startTime = System.currentTimeMillis();
+        long startMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+
         try {
             // Save code to a temporary file
             File codeFile = new File("Test.java");
@@ -75,7 +78,18 @@ public class CodeExecutionController {
             response.setError("Error: " + e.getMessage());
         }
 
+        long endTime = System.currentTimeMillis();
+        long endMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+
+        // Calculate execution time and memory usage
+        long executionTime = endTime - startTime;
+        long memoryUsage = endMemory - startMemory;
+
         response.setOutput(output.toString());
+        response.setError(error.toString());
+        response.setExecutionTime(executionTime);
+        response.setMemoryUsage(memoryUsage);
+
         return response;
     }
 }
