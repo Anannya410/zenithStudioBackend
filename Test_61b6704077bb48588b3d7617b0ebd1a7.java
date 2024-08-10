@@ -1,1 +1,0 @@
-public class Test_61b6704077bb48588b3d7617b0ebd1a7 { Scanner input = new Scanner(System.in); int a = input.nextInt(); int b = input.nextInt(); public static void main(String[] args) { System.out.println(a); System.out.println(b); } }

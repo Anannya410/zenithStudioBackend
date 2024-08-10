@@ -1,1 +1,0 @@
-public class Test_5a3506cb-d4c8-4f50-b4e2-ef01106a4ac5 { public static void main(String[] args) { System.out.println(2); System.out.println(3); } }
