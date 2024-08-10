@@ -2,8 +2,9 @@ package com.codebrewers.backend.controller;
 
 import com.codebrewers.backend.dao.User;
 import com.codebrewers.backend.dao.LoginRequest;
+import com.codebrewers.backend.dao.RegistrationResponse;
+import com.codebrewers.backend.dao.LoginResponse;
 import com.codebrewers.backend.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,28 +13,31 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    // Registration endpoint
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody User user) {
+    public ResponseEntity<RegistrationResponse> registerUser(@RequestBody User user) {
         try {
             userService.registerUser(user);
-            return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
+            RegistrationResponse response = new RegistrationResponse(true, user.getUsername());
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RegistrationResponse(false, null));
         }
     }
 
-    // Login endpoint
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest) {
         try {
             User user = userService.loginUser(loginRequest.getUsername(), loginRequest.getPassword());
-            return ResponseEntity.status(HttpStatus.OK).body("Login successful for user: " + user.getUsername());
+            LoginResponse response = new LoginResponse(true, user.getUsername());
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponse(false, null));
         }
     }
 }
